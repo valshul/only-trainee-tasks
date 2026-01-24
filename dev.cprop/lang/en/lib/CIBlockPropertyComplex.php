@@ -1,0 +1,18 @@
+<?php
+$MESS['DEV_CPROP_DESC'] = 'Complex property';
+$MESS['DEV_CPROP_SHOW_TEXT'] = 'Show';
+$MESS['DEV_CPROP_HIDE_TEXT'] = 'Hide';
+$MESS['DEV_CPROP_CLEAR_TEXT'] = 'Delete';
+$MESS['DEV_CPROP_ERROR_INCORRECT_SETTINGS'] = 'The list of fields in the property settings is not filled';
+$MESS['DEV_CPROP_SETTING_FIELD_TITLE'] = 'Title';
+$MESS['DEV_CPROP_SETTING_FIELD_SORT'] = 'Sort';
+$MESS['DEV_CPROP_SETTING_FIELD_TYPE'] = 'Type';
+$MESS['DEV_CPROP_SETTING_BTN_ADD'] = 'Add more';
+$MESS['DEV_CPROP_SETTINGS_TITLE'] = 'Fields list';
+$MESS['DEV_CPROP_FIELD_TYPE_STRING'] = 'String';
+$MESS['DEV_CPROP_FIELD_TYPE_FILE'] = 'File';
+$MESS['DEV_CPROP_FIELD_TYPE_TEXT'] = 'Text';
+$MESS['DEV_CPROP_FIELD_TYPE_HTML'] = 'HTML Text';
+$MESS['DEV_CPROP_FIELD_TYPE_DATE'] = 'Date';
+$MESS['DEV_CPROP_FIELD_TYPE_ELEMENT'] = 'Bind to element';
+$MESS['DEV_CPROP_FILE_DELETE'] = 'Delete file';
