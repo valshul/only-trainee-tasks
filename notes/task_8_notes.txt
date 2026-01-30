@@ -1,0 +1,67 @@
+
+/// Задание
+
+Сделать CRUD приложение для работы с яндекс диском по API, используя библиотеку https://github.com/jack-theripper/yandex
+	1. Установить библиотеку через composer
+	2. Получить API токен https://yandex.ru/dev/oauth/doc/dg/tasks/get-oauth-token-docpage/
+	3. Изучить документацию https://yandex.ru/dev/disk/api/concepts/about-docpage/
+	4. Реализовалть добавление, просмотр и удаление файлов на любой странице
+	5. (Дополнительно) Реализовать изменение файлов
+
+
+
+/// Creating
+
+~THOUGHTS
+what do they mean by crud app? does it need to be diff website? or can be just a part of the existing s1? what does 'on any page' mean? like on any/every page or on any/one page???? confusled :< 
+i'm thinking i can probably make it as a (complex) component only:yandex.disk; with simple components yandex.disk.folder (where you can click files for viewing and add/delete/rename them) and with .file (it's editable depending if it's a txt file or otherwise smth that can be easily edited in browser)
+need to figure out how to make user log in tho idk how to do that :/
+
+~INSTALLING
+need to `install composer` to install a library bc nothing is easy in life:
+	cd ~ \\ moves to /home/bitrix aka outside of document root; doesn't matter too much where to install
+	wget https://getcomposer.org/download/latest-stable/composer.phar \\ shows an error but it's fine?
+	chmod +x composer.phar \\ ????
+	sudo mv composer.phar /usr/local/bin/composer
+		* DIDN"T WORK with of without sudo (with sudo: requires password and i can't input password due to how winscp's console works. without sudo: user bitrix doesn't have privileges but on user root i can't open console for some reason?)
+		* SIGN in as `root` and MANUALLY `move` /composer.phar to /usr/local/bin/composer (rename the file itself to be just `composer` btw. /usr is in the very very very root folder of the server, same level as /home)
+	
+	composer -V \\ show version to make sure that composer works
+		* COMPLAINS about the phar extension missing
+		* find `php.ini` (location can be found via php settings. on the web site admin, search for php -> php settings -> Loaded Configuration File -> /etc/php.ini) and add a line `extension=phar.so` for server on linux/unix (or extension=phar.dll for win)
+		* after that the version command works correctly :thumbs_up:
+
+installing the ya disk library:
+	composer require arhitector/yandex dev-master 
+		* requires curl extension this time. similarly add `extension=curl.so` (or .dll) in php.ini
+		* i installed it from www/local. the installation created composer.json (basically name of what to install), composer.lock ("This file locks the dependencies of your project to a known state", ??? sure), and folder vendor where the libs were installed.
+
+~YANDEX_API
+https://yandex.ru/dev/id/doc/ru/how-to
+Чтобы настроить авторизацию при помощи `API Яндекс ID`, подготовьте ваше приложение для работы с протоколом OAuth 2.0:
+	1. Зарегистрируйте приложение в сервисе Яндекс OAuth.
+	2. Настройте доступ приложения к Яндекс ID. Для этого получите согласие пользователя для работы с приложением и запросите OAuth-токен. Токен следует запрашивать для каждого нового пользователя, который входит через Яндекс в ваш сервис.
+
+1. 
+	- created `onlytrainee` app with permissions for everything that had disk in the title
+2.
+	- following the tutorial on how to do user auth but the script i add in the head is calling upon https://autofill.yandex.ru/ and apparently 'Framing 'https://autofill.yandex.ru/' violates the following Content Security Policy directive: "frame-ancestors https://192.168.1.61". The request has been blocked.' AND I HAVE NO CLUE HOW TO REMOVE THE FUCKING DIRECTIVE NO MATTER HOW MUCH I LOOK ???? help
+	- after a lot of searching this is the most useful thing i've found: https://helpdesk.bitrix24.ru/open/11078630. but it's not working either.
+	- I BROKE NGINX WHILE TRYING TO FIGURE OUT HOW TO DO FRAME-ANCESTORS SHIT YAY YIPEE WOWIE I HATE THIS nothing is lost tho and the server isn't broken, i can fix it.
+	- i gave up so in the end i got user `disk token manually` https://yandex.ru/dev/id/doc/ru/tokens/debug-token
+
+~CODING
+	- i've made a complex component `only:yandex.disk`
+	- now i've made simple components `only:yandex.disk.dir` and `.file`; all components are placed in `only` folder. note: when making templates for these simple components in the 'templates' folder of the complex component the folder that's usually called 'bitrix' actually needs to be called after the vendor of the component (so 'only' in this case)
+	- resource deletion and creation is realised via `ajax actions`; tl;dr: in template call BX.ajax.runComponentAction, and in the component's class.php (or ajax.php) make a func with 'Action' attached at the end of its name (and write some other funcs and whatnot too). here are useful links:
+		(1) https://dev.1c-bitrix.ru/api_help/js_lib/ajax/bx_ajax_runcomponentaction.php; (2) https://dev.1c-bitrix.ru/learning/course/index.php?COURSE_ID=43&LESSON_ID=14014&LESSON_PATH=3913.3516.5062.3750.14014; (3) https://docs.1c-bitrix.ru/pages/framework/controllers.html
+	- had a small issue with updateResource func but only bc i named one of the parameters in php function 'data' so when calling it in js/ajax it was `'data: {..., data: ...}' WHICH IS BAD` and doesn't work. don't be silly like that
+
+
+
+____________________________________________
+
+task received:	2026-01-26
+task started:	2026-01-23
+task finished:	2026-01-26
+time elapsed:	8:30 + 7:00 + 7:30 + 8:00 = 31:00
