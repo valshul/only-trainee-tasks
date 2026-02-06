@@ -9,6 +9,7 @@
 | 6 | custom `only:news.list` component. | 2026-01-13 | 2026-01-14 | 14h30m |
 | 7 | custom `dev.cprop` module. | 2026-01-17 | 2026-01-19 | 23h |
 | 8 | php library installation with composer;<br>custom `only:yandex.disk`, `.disk.dir`, `.disk.file` components. | 2026-01-23 | 2026-01-26 | 31h |
+| final | custom `only:servicecars.list` component. | 2026-02-03 | 2026-02-05 | 17h |
 
 all courses certificates can be found in `/certificates` or [here](https://dev.1c-bitrix.ru/learning/resume.php?ID=75729761-9279356).
 all personal notes taken during studying/training can be found in `/notes`.

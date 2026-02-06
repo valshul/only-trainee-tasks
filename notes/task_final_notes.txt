@@ -1,0 +1,83 @@
+
+/// Задание
+
+Задание на битриксе:
+В компании предусмотрена возможность выбора служебного автомобиля для служебной поездки на определенное время из не занятых другими сотрудниками. В служебной части корпоративного сайта необходимо будет размещать актуальную информацию о доступных для конкретного сотрудника автомобилях на запланированное время поездки.
+
+Дополнительные условия:
+- каждая модель автомобиля имеет определенную категорию комфорта (первая, вторая, третья... );
+- для определенной должности сотрудников доступны только автомобили определенной категории комфорта (одной или нескольких категорий);
+- за каждым автомобилем закреплён свой водитель.
+
+Необходимо:
+1. Спроектировать структуру административного раздела управления контентом (инфоблоки/хайлоадблоки, их свойства и связи), составить в любом редакторе (с возможностью экспорта в  jpg, png, pdf или просмотра в браузере) диаграмму связей. Например https://www.drawio.com/;
+2. Написать компонент, который выводит для текущего сотрудника список свободных автомобилей на запрошенное время (запрошенное время начала и время окончания поездки передается от клиента на сервер в get-параметрах) с указанием модели, категории комфорта, водителя - шаблон c html-разметкой (template.php) делать не нужно.
+
+
+
+/// Creating
+
+~THOUGHTS
+car model	1:1		comfort category
+job title	1:n		comfort category
+car 		(n)1:1	driver
+
+task:
+	1. draw smth like a db structure, except instead of db tablee it's bitrix things (iblock/highloadblocks)
+	2. code component, input: GET time start and end, output: list of available cars (car model, comfort category, driver). only arResult, no template.php
+
+it might be similar to how techsupport is organised in bitrix? so draw inspo from there.
+
+
+~CODING
+structure:
+\\ hlb = highloadblock, ib = iblock
+	`ServiceCarComfortCategories`
+	hlb service_car_comfort_categories
+		ID
+		UF_NAME						(string)
+	`ServiceCarModels`
+	hlb service_car_models
+		ID
+		UF_NAME						(string)
+		UF_COMFORT					(bind to service_car_comfort_categories hlb)
+		UF_XML_ID					(string)
+	`WorkPositions`
+	hlb work_positions
+		ID
+		UF_NAME						(string)
+		UF_COMFORT					(bind to service_car_comfort_categories hlb)
+	`Service cars`
+	ib service_cars
+		ID
+		service_car_model			(directory to service_car_models hlb)
+		service_car_driver			(bind to USERS)
+	`Service rides`
+	ib service_rides
+		ID
+		service_ride_start_time		(datetime)
+		service_ride_end_time		(datetime)
+		service_ride_car			(bind to service_cars ib)
+		service_ride_client			(bind to USER)
+	`USERS`
+	global object
+		...
+		UF_WORK_POSITION			(bind to work_positions hlb)
+
+
+for service_car_models to properly show up as a dict for service_cars, hlb need to have ufield with specific names like UF_NAME and UF_LINK and UF_[specific keywords]. also i think it needs to have UF_XML_ID for hlb elements to show up in a list of options?
+
+to send `GET` via BX.ajax.runComponentAction use `getParameters` in place of 'data'.
+
+ajax action don't naturally have access to `$arParam`, so i passed json_encode($arParam) in getParameters along with datetime parameters and used $arParams = json_decode($params, true) in class.php (true for decoding into array, not object); $arResult isn't accessible either but you can jsut call initResult().
+
+structure of created iblock and hlblock was drawn using https://www.drawio.com/.
+
+
+
+____________________________________________
+
+task received:	2026-02-03
+task started:	2026-02-03
+task finished:	2026-02-05
+time elapsed:	5:00 + 10:10 + 1:50 = 17:00
